@@ -1,0 +1,17 @@
+docs/
+
+ai_agents_docs/
+
+node_modules/
+
+# ignore all environment files
+.env
+
+# Ignore all AI agents files
+AGENT_DISPATCH.md
+CODER.md
+DOCUMENTER.md
+PLANNER.md
+progress_template.md
+REVIEWER.md
+TESTER.md
