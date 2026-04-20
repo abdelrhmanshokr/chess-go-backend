@@ -80,4 +80,8 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   getClient(): Redis {
     return this.client;
   }
+
+  getSubscriber(): Redis {
+    return this.subscriber;
+  }
 }

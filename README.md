@@ -5,7 +5,8 @@ NestJS (Node.js with TypeScript). Project initialized on April 1, 2026.
 - **Strict Mode**: Fully enabled in `tsconfig.json`.
 - **Database ORM**: Prisma ORM configured with PostgreSQL.
 - **Caching/Pub-Sub**: Redis (ioredis) integrated for high-frequency data and real-time sync.
-- **Architecture**: Standard NestJS structure with `src/`, `test/`, `prisma/`, and `redis/` folders.
+- **Real-time Engine**: Socket.io with Redis Adapter for horizontal scaling.
+- **Architecture**: Standard NestJS structure with `src/`, `test/`, `prisma/`, `redis/`, and `game/` (Gateway) folders.
 - **Build Status**: Verified with `npm run build` and `npm run start`.
 
 ## 🛠️ Technology Stack
@@ -14,7 +15,7 @@ NestJS (Node.js with TypeScript). Project initialized on April 1, 2026.
 - **Database**: PostgreSQL
 - **ORM**: Prisma (Service & Module globally configured)
 - **Caching/Pub-Sub**: Redis (Service & Module globally configured via `ioredis`)
-- **WebSockets**: Socket.io
+- **WebSockets**: Socket.io (with Redis IoAdapter for scalability)
 - **Chess Engine**: chess.js (move validation)
 - **Authentication**: JWT with Passport.js
 - **Password Hashing**: bcrypt
@@ -32,6 +33,13 @@ NestJS (Node.js with TypeScript). Project initialized on April 1, 2026.
 3. Configure Environment: Copy `.env.example` to `.env` and set `DATABASE_URL`, `REDIS_HOST`, and `REDIS_PORT`.
 4. Initialize Prisma: `npx prisma generate`
 5. Run the development server: `npm run start:dev`
+
+## 📡 WebSockets
+The project uses Socket.io for real-time communication.
+- **Gateway**: `GameGateway` (handles connections and game events)
+- **Adapter**: `RedisIoAdapter` (syncs events across server instances)
+- **Default Port**: 3000 (standard NestJS port)
+- **Ping/Pong**: Send a `ping` event to receive a `pong` response from the server.
 
 ## 🧠 The Agents
 Agent	File	Responsibility

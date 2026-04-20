@@ -6,10 +6,11 @@
 | P1-T1 | Initialize NestJS project | April 1, 2026 | NestJS project initialized with strict mode and project structure verified. |
 | P1-T2 | Configure Prisma with PostgreSQL connection | April 1, 2026 | Initialized Prisma, added PrimsService (global), and enabled shutdown hooks. |
 | P1-T3 | Set up Redis for caching and pub/sub | April 20, 2026 | Integrated ioredis with global RedisService and RedisModule, supporting commands and pub/sub. |
+| P1-T4 | Configure Socket.io gateway | April 20, 2026 | Established GameGateway and integrated RedisIoAdapter for cross-instance event sync. |
 
 ## Current Focus
 - **Phase 1: Foundation** - Setting up infrastructure and baseline dependencies.
-- **Current Task**: P1-T4: Configure Socket.io gateway.
+- **Current Task**: P1-T5: Install chess.js library for move validation.
 
 ## Task Breakdown
 
@@ -17,7 +18,7 @@
 - [x] **P1-T1**: Initialize NestJS project
 - [x] **P1-T2**: Configure Prisma with PostgreSQL connection
 - [x] **P1-T3**: Set up Redis for caching and pub/sub
-- [ ] **P1-T4**: Configure Socket.io gateway
+- [x] **P1-T4**: Configure Socket.io gateway
 - [ ] **P1-T5**: Install chess.js library for move validation
 - [ ] **P1-T6**: Set up environment configuration (dev/prod)
 - [ ] **P1-T7**: Create database schema and run migrations
