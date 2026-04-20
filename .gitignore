@@ -23,3 +23,4 @@ TESTER.md
 # Current/implemented tasks description files
 P1-T1_Initialize_NestJS.md
 P1-T2_Configure_Prisma.md
+P1-T3_Set_up_Redis.md
