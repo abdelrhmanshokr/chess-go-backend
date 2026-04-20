@@ -4,7 +4,11 @@ ai_agents_docs/
 
 node_modules/
 
-# ignore all environment files
+implemented_tasks/
+
+dist/
+
+# Ignore all environment files
 .env
 
 # Ignore all AI agents files
@@ -15,3 +19,7 @@ PLANNER.md
 progress_template.md
 REVIEWER.md
 TESTER.md
+
+# Current/implemented tasks description files
+P1-T1_Initialize_NestJS.md
+P1-T2_Configure_Prisma.md

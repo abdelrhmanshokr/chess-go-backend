@@ -3,14 +3,15 @@
 This project uses a team of AI agents to implement, test, and document features in a structured, step‑by‑step manner. Each agent has a specific role, and you (the developer) act as the coordinator, triggering them in sequence.
 NestJS (Node.js with TypeScript). Project initialized on April 1, 2026.
 - **Strict Mode**: Fully enabled in `tsconfig.json`.
-- **Architecture**: Standard NestJS structure with `src/` and `test/` folders.
+- **Database ORM**: Prisma ORM configured with PostgreSQL.
+- **Architecture**: Standard NestJS structure with `src/`, `test/`, and `prisma/` folders.
 - **Build Status**: Verified with `npm run build` and `npm run start`.
 
 ## 🛠️ Technology Stack
 ### Backend
 - **Framework**: NestJS (Node.js with TypeScript)
 - **Database**: PostgreSQL
-- **ORM**: Prisma
+- **ORM**: Prisma (Service & Module globally configured)
 - **Caching/Pub-Sub**: Redis
 - **WebSockets**: Socket.io
 - **Chess Engine**: chess.js (move validation)
@@ -21,11 +22,14 @@ NestJS (Node.js with TypeScript). Project initialized on April 1, 2026.
 ### Prerequisites
 - Node.js (v18+)
 - npm
+- PostgreSQL (for Prisma connection)
 
 ### Installation
 1. Clone the repository.
 2. Install dependencies: `npm install`
-3. Run the development server: `npm run start:dev`
+3. Configure Environment: Copy `.env.example` to `.env` and set `DATABASE_URL`.
+4. Initialize Prisma: `npx prisma generate`
+5. Run the development server: `npm run start:dev`
 
 ## 🧠 The Agents
 Agent	File	Responsibility
