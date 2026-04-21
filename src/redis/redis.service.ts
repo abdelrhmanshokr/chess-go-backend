@@ -11,8 +11,12 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   constructor(private configService: ConfigService) {}
 
   onModuleInit() {
-    const host = this.configService.get<string>('REDIS_HOST', 'localhost');
-    const port = this.configService.get<number>('REDIS_PORT', 6379);
+    /**
+     * Initialize Redis connections using validated configuration.
+     * We rely on ConfigService and the Joi validation schema to ensure values exist.
+     */
+    const host = this.configService.getOrThrow<string>('REDIS_HOST');
+    const port = this.configService.getOrThrow<number>('REDIS_PORT');
 
     this.client = new Redis({
       host,

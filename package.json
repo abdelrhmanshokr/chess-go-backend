@@ -30,6 +30,7 @@
     "chess.js": "^1.4.0",
     "dotenv": "^17.3.1",
     "ioredis": "^5.10.1",
+    "joi": "^18.1.2",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "socket.io": "^4.8.3"
@@ -44,6 +45,7 @@
     "@types/chess.js": "^0.13.7",
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
+    "@types/joi": "^17.2.3",
     "@types/node": "^22.10.7",
     "@types/supertest": "^6.0.2",
     "eslint": "^9.18.0",

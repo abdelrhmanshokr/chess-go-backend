@@ -7,7 +7,8 @@ NestJS (Node.js with TypeScript). Project initialized on April 1, 2026.
 - **Caching/Pub-Sub**: Redis (ioredis) integrated for high-frequency data and real-time sync.
 - **Real-time Engine**: Socket.io with Redis Adapter for horizontal scaling.
 - **Chess Engine**: `chess.js` for move validation and game state management (FEN/PGN).
-- **Architecture**: Standard NestJS structure with `src/`, `test/`, `prisma/`, `redis/`, and `game/` (Gateway) folders.
+- **Environment Config**: `@nestjs/config` with `Joi` schema-based validation.
+- **Architecture**: Standard NestJS structure with `src/`, `test/`, `prisma/`, `redis/`, `game/` (Gateway), and `config/` (Validation) folders.
 - **Build Status**: Verified with `npm run build` and `npm run start`.
 
 ## 🛠️ Technology Stack
@@ -18,6 +19,7 @@ NestJS (Node.js with TypeScript). Project initialized on April 1, 2026.
 - **Caching/Pub-Sub**: Redis (Service & Module globally configured via `ioredis`)
 - **WebSockets**: Socket.io (with Redis IoAdapter for scalability)
 - **Chess Engine**: `chess.js` (move validation)
+- **Configuration**: `@nestjs/config` with `Joi` validation
 - **Authentication**: JWT with Passport.js
 - **Password Hashing**: bcrypt
 
@@ -31,9 +33,15 @@ NestJS (Node.js with TypeScript). Project initialized on April 1, 2026.
 ### Installation
 1. Clone the repository.
 2. Install dependencies: `npm install`
-3. Configure Environment: Copy `.env.example` to `.env` and set `DATABASE_URL`, `REDIS_HOST`, and `REDIS_PORT`.
+3. Configure Environment: Copy `.env.example` to `.env` and provide your specific credentials.
 4. Initialize Prisma: `npx prisma generate`
 5. Run the development server: `npm run start:dev`
+
+## ⚙️ Configuration
+The application uses strict environment variable validation.
+- **Tools**: `@nestjs/config` + `Joi`.
+- **Validation**: Fails fast if required variables (`DATABASE_URL`, `REDIS_HOST`, etc.) are missing or malformed.
+- **Secrets**: Handled via `.env` (excluded from Git).
 
 ## 📡 WebSockets
 The project uses Socket.io for real-time communication.

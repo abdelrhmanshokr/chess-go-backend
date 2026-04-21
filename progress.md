@@ -8,10 +8,11 @@
 | P1-T3 | Set up Redis for caching and pub/sub | April 20, 2026 | Integrated ioredis with global RedisService and RedisModule, supporting commands and pub/sub. |
 | P1-T4 | Configure Socket.io gateway | April 20, 2026 | Established GameGateway and integrated RedisIoAdapter for cross-instance event sync. |
 | P1-T5 | Install chess.js library for move validation | April 21, 2026 | Installed chess.js and verified FEN state transitions and move validation. |
+| P1-T6 | Set up environment configuration (dev/prod) | April 21, 2026 | Implemented @nestjs/config with Joi validation; refactored RedisService for robustness. |
 
 ## Current Focus
 - **Phase 1: Foundation** - Setting up infrastructure and baseline dependencies.
-- **Current Task**: P1-T6: Set up environment configuration (dev/prod).
+- **Current Task**: P1-T7: Create database schema and run migrations.
 
 ## Task Breakdown
 
@@ -21,7 +22,7 @@
 - [x] **P1-T3**: Set up Redis for caching and pub/sub
 - [x] **P1-T4**: Configure Socket.io gateway
 - [x] **P1-T5**: Install chess.js library for move validation
-- [ ] **P1-T6**: Set up environment configuration (dev/prod)
+- [x] **P1-T6**: Set up environment configuration (dev/prod)
 - [ ] **P1-T7**: Create database schema and run migrations
 - [ ] **P1-T8**: Seed database with test users
 

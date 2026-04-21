@@ -9,6 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
+const env_validation_1 = require("./config/env.validation");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const prisma_module_1 = require("./prisma/prisma.module");
@@ -20,7 +21,14 @@ exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            config_1.ConfigModule.forRoot({ isGlobal: true }),
+            config_1.ConfigModule.forRoot({
+                isGlobal: true,
+                validationSchema: env_validation_1.envValidationSchema,
+                validationOptions: {
+                    allowUnknown: true,
+                    abortEarly: false,
+                },
+            }),
             prisma_module_1.PrismaModule,
             redis_module_1.RedisModule,
             game_module_1.GameModule,
