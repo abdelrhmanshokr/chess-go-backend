@@ -6,6 +6,7 @@ NestJS (Node.js with TypeScript). Project initialized on April 1, 2026.
 - **Database ORM**: Prisma ORM configured with PostgreSQL.
 - **Caching/Pub-Sub**: Redis (ioredis) integrated for high-frequency data and real-time sync.
 - **Real-time Engine**: Socket.io with Redis Adapter for horizontal scaling.
+- **Chess Engine**: `chess.js` for move validation and game state management (FEN/PGN).
 - **Architecture**: Standard NestJS structure with `src/`, `test/`, `prisma/`, `redis/`, and `game/` (Gateway) folders.
 - **Build Status**: Verified with `npm run build` and `npm run start`.
 
@@ -16,7 +17,7 @@ NestJS (Node.js with TypeScript). Project initialized on April 1, 2026.
 - **ORM**: Prisma (Service & Module globally configured)
 - **Caching/Pub-Sub**: Redis (Service & Module globally configured via `ioredis`)
 - **WebSockets**: Socket.io (with Redis IoAdapter for scalability)
-- **Chess Engine**: chess.js (move validation)
+- **Chess Engine**: `chess.js` (move validation)
 - **Authentication**: JWT with Passport.js
 - **Password Hashing**: bcrypt
 
@@ -40,6 +41,12 @@ The project uses Socket.io for real-time communication.
 - **Adapter**: `RedisIoAdapter` (syncs events across server instances)
 - **Default Port**: 3000 (standard NestJS port)
 - **Ping/Pong**: Send a `ping` event to receive a `pong` response from the server.
+
+## ♟️ Chess Engine
+The backend integration includes `chess.js` to enforce rules and manage game state.
+- **Move Validation**: Validates moves against FEN states.
+- **State Management**: Handles standard chess notation (FEN/PGN).
+- **Core Engine**: Powers the upcoming `GameService`.
 
 ## 🧠 The Agents
 Agent	File	Responsibility
