@@ -8,13 +8,14 @@ NestJS (Node.js with TypeScript). Project initialized on April 1, 2026.
 - **Real-time Engine**: Socket.io with Redis Adapter for horizontal scaling.
 - **Chess Engine**: `chess.js` for move validation and game state management (FEN/PGN).
 - **Environment Config**: `@nestjs/config` with `Joi` schema-based validation.
-- **Architecture**: Standard NestJS structure with `src/`, `test/`, `prisma/`, `redis/`, `game/` (Gateway), and `config/` (Validation) folders.
+- **Database Schema**: Version-controlled Prisma migrations for PostgreSQL.
+- **Architecture**: Standard NestJS structure with `src/`, `test/`, `prisma/` (Schema/Migrations), `redis/`, `game/` (Gateway), and `config/` (Validation) folders.
 - **Build Status**: Verified with `npm run build` and `npm run start`.
 
 ## 🛠️ Technology Stack
 ### Backend
 - **Framework**: NestJS (Node.js with TypeScript)
-- **Database**: PostgreSQL
+- **Database**: PostgreSQL (Structured via Prisma)
 - **ORM**: Prisma (Service & Module globally configured)
 - **Caching/Pub-Sub**: Redis (Service & Module globally configured via `ioredis`)
 - **WebSockets**: Socket.io (with Redis IoAdapter for scalability)
@@ -27,14 +28,18 @@ NestJS (Node.js with TypeScript). Project initialized on April 1, 2026.
 ### Prerequisites
 - Node.js (v18+)
 - npm
-- PostgreSQL (for Prisma connection)
+- PostgreSQL (v14+ recommended)
 - Redis (v6+ for caching and pub/sub)
 
 ### Installation
 1. Clone the repository.
 2. Install dependencies: `npm install`
 3. Configure Environment: Copy `.env.example` to `.env` and provide your specific credentials.
-4. Initialize Prisma: `npx prisma generate`
+4. Database Setup:
+   ```bash
+   npx prisma migrate dev  # Runs migrations
+   npx prisma generate     # Updates Prisma Client
+   ```
 5. Run the development server: `npm run start:dev`
 
 ## ⚙️ Configuration
@@ -42,6 +47,14 @@ The application uses strict environment variable validation.
 - **Tools**: `@nestjs/config` + `Joi`.
 - **Validation**: Fails fast if required variables (`DATABASE_URL`, `REDIS_HOST`, etc.) are missing or malformed.
 - **Secrets**: Handled via `.env` (excluded from Git).
+
+## 🗄️ Database Schema
+The project uses Prisma to manage its PostgreSQL schema.
+- **User**: Authentication, Elo ratings, and game statistics.
+- **Game**: 2v2 match state, FEN strings, and status tracking.
+- **Move**: Full move history with composite indexing for performance.
+- **GameTimer**: Persistence for individual and team time controls.
+- **DrawOffer**: Unanimous voting logic for shared game results.
 
 ## 📡 WebSockets
 The project uses Socket.io for real-time communication.

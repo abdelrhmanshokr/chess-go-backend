@@ -9,10 +9,11 @@
 | P1-T4 | Configure Socket.io gateway | April 20, 2026 | Established GameGateway and integrated RedisIoAdapter for cross-instance event sync. |
 | P1-T5 | Install chess.js library for move validation | April 21, 2026 | Installed chess.js and verified FEN state transitions and move validation. |
 | P1-T6 | Set up environment configuration (dev/prod) | April 21, 2026 | Implemented @nestjs/config with Joi validation; refactored RedisService for robustness. |
+| P1-T7 | Create database schema and run migrations | April 22, 2026 | Implemented core models (User, Game, Move, etc.) with indices and baseline migration. |
 
 ## Current Focus
 - **Phase 1: Foundation** - Setting up infrastructure and baseline dependencies.
-- **Current Task**: P1-T7: Create database schema and run migrations.
+- **Current Task**: P1-T8: Seed database with test users.
 
 ## Task Breakdown
 
@@ -23,7 +24,7 @@
 - [x] **P1-T4**: Configure Socket.io gateway
 - [x] **P1-T5**: Install chess.js library for move validation
 - [x] **P1-T6**: Set up environment configuration (dev/prod)
-- [ ] **P1-T7**: Create database schema and run migrations
+- [x] **P1-T7**: Create database schema and run migrations
 - [ ] **P1-T8**: Seed database with test users
 
 ### Phase 2: Authentication & User Management

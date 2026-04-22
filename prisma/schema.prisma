@@ -12,3 +12,113 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+/// Model representing a user in the system.
+/// Stores credentials, profile info, and statistics for various formats.
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  username      String   @unique
+  password      String
+  avatarUrl     String?
+  elo           Int      @default(1200)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations for 2v2 games
+  gamesAsWhite1 Game[] @relation("WhitePlayer1")
+  gamesAsWhite2 Game[] @relation("WhitePlayer2")
+  gamesAsBlack1 Game[] @relation("BlackPlayer1")
+  gamesAsBlack2 Game[] @relation("BlackPlayer2")
+
+  // Participation in moves and draw offers
+  moves         Move[]
+  drawOffers    DrawOffer[]
+}
+
+/// Enum for game states.
+enum GameStatus {
+  WAITING
+  IN_PROGRESS
+  FINISHED
+  ABANDONED
+}
+
+/// Model representing a 2v2 Chess + Go hybrid game.
+model Game {
+  id            String     @id @default(uuid())
+  status        GameStatus @default(WAITING)
+  fen           String     @default("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") // Chess board state
+  goState       Json?                                                                         // Go board state (grid/stones)
+  
+  // Players
+  whitePlayer1Id String
+  whitePlayer1   User   @relation("WhitePlayer1", fields: [whitePlayer1Id], references: [id])
+  whitePlayer2Id String
+  whitePlayer2   User   @relation("WhitePlayer2", fields: [whitePlayer2Id], references: [id])
+  
+  blackPlayer1Id String
+  blackPlayer1   User   @relation("BlackPlayer1", fields: [blackPlayer1Id], references: [id])
+  blackPlayer2Id String
+  blackPlayer2   User   @relation("BlackPlayer2", fields: [blackPlayer2Id], references: [id])
+
+  // Game configuration
+  timeControl   Int        @default(600) // Total seconds per team
+  increment     Int        @default(0)   // Seconds per move
+
+  // History and persistence
+  moves         Move[]
+  timers        GameTimer?
+  drawOffers    DrawOffer[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+/// Model representing a single move performed in a game.
+model Move {
+  id            String   @id @default(uuid())
+  gameId        String
+  game          Game     @relation(fields: [gameId], references: [id])
+  playerId      String
+  player        User     @relation(fields: [playerId], references: [id])
+  
+  notation      String   // move string (e.g., "e4", "3:4")
+  type          String   // "CHESS" or "GO"
+  
+  fenBefore     String
+  fenAfter      String
+  
+  createdAt     DateTime @default(now())
+
+  @@index([gameId, createdAt])
+}
+
+/// Dual-timer system for 2v2 play.
+/// Tracks remaining time for both teams.
+model GameTimer {
+  id            String   @id @default(uuid())
+  gameId        String   @unique
+  game          Game     @relation(fields: [gameId], references: [id])
+  
+  whiteTimeRemaining Int // in milliseconds
+  blackTimeRemaining Int // in milliseconds
+  
+  lastUpdate    DateTime @default(now())
+}
+
+/// Logic for draw offers requiring unanimous player approval.
+model DrawOffer {
+  id            String   @id @default(uuid())
+  gameId        String
+  game          Game     @relation(fields: [gameId], references: [id])
+  
+  offeringPlayerId String
+  offeringPlayer   User @relation(fields: [offeringPlayerId], references: [id])
+  
+  acceptedBy    String[] // Array of user IDs who accepted
+  isActive      Boolean  @default(true)
+  expiresAt     DateTime? // Optional expiration for draw offers
+  
+  createdAt     DateTime @default(now())
+}
