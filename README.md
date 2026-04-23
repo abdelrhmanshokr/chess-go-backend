@@ -39,6 +39,7 @@ NestJS (Node.js with TypeScript). Project initialized on April 1, 2026.
    ```bash
    npx prisma migrate dev  # Runs migrations
    npx prisma generate     # Updates Prisma Client
+   npx prisma db seed      # Populates test users
    ```
 5. Run the development server: `npm run start:dev`
 

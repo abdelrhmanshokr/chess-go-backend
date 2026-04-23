@@ -10,14 +10,15 @@
 | P1-T5 | Install chess.js library for move validation | April 21, 2026 | Installed chess.js and verified FEN state transitions and move validation. |
 | P1-T6 | Set up environment configuration (dev/prod) | April 21, 2026 | Implemented @nestjs/config with Joi validation; refactored RedisService for robustness. |
 | P1-T7 | Create database schema and run migrations | April 22, 2026 | Implemented core models (User, Game, Move, etc.) with indices and baseline migration. |
+| P1-T8 | Seed database with test users | April 23, 2026 | Created idempotent Prisma seed script with 4 test users for 2v2 simulation. |
 
 ## Current Focus
-- **Phase 1: Foundation** - Setting up infrastructure and baseline dependencies.
-- **Current Task**: P1-T8: Seed database with test users.
+- **Phase 2: Authentication & User Management** - Implementing security and user identity.
+- **Current Task**: P2-T1: Implement JWT-based authentication with Passport.js.
 
 ## Task Breakdown
 
-### Phase 1: Foundation
+### Phase 1: Foundation (COMPLETED)
 - [x] **P1-T1**: Initialize NestJS project
 - [x] **P1-T2**: Configure Prisma with PostgreSQL connection
 - [x] **P1-T3**: Set up Redis for caching and pub/sub
@@ -25,7 +26,7 @@
 - [x] **P1-T5**: Install chess.js library for move validation
 - [x] **P1-T6**: Set up environment configuration (dev/prod)
 - [x] **P1-T7**: Create database schema and run migrations
-- [ ] **P1-T8**: Seed database with test users
+- [x] **P1-T8**: Seed database with test users
 
 ### Phase 2: Authentication & User Management
 - [ ] **P2-T1**: Implement JWT-based authentication with Passport.js
