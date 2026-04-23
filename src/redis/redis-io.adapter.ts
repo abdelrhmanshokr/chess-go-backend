@@ -17,6 +17,12 @@ export class RedisIoAdapter extends IoAdapter {
     const pubClient = this.redisService.getClient();
     const subClient = this.redisService.getSubscriber();
 
+    if (!pubClient || !subClient) {
+      throw new Error(
+        'Redis clients are not initialized. Ensure RedisService is properly configured before connecting the adapter.',
+      );
+    }
+
     this.adapterConstructor = createAdapter(pubClient, subClient);
   }
 

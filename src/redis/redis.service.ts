@@ -10,10 +10,11 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
 
   constructor(private configService: ConfigService) {}
 
-  onModuleInit() {
+  async onModuleInit() {
     /**
-     * Initialize Redis connections using validated configuration.
-     * We rely on ConfigService and the Joi validation schema to ensure values exist.
+     * Initialize Redis connections during module initialization.
+     * This follows standard NestJS lifecycle patterns while allowing
+     * manual awaiting during the application bootstrap process.
      */
     const host = this.configService.getOrThrow<string>('REDIS_HOST');
     const port = this.configService.getOrThrow<number>('REDIS_PORT');
@@ -21,11 +22,13 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     this.client = new Redis({
       host,
       port,
+      lazyConnect: true, // we will connect explicitly below
     });
 
     this.subscriber = new Redis({
       host,
       port,
+      lazyConnect: true,
     });
 
     this.client.on('connect', () => {
@@ -43,6 +46,9 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     this.subscriber.on('error', (err) => {
       this.logger.error('Redis Subscriber error', err);
     });
+
+    // Ensure connection is established
+    await Promise.all([this.client.connect(), this.subscriber.connect()]);
   }
 
   onModuleDestroy() {

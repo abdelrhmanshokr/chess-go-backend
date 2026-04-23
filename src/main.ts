@@ -8,6 +8,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const redisService = app.get(RedisService);
+  // Ensure Redis infrastructure is initialized before attaching the WebSocket adapter.
+  // This prevents race conditions where the adapter tries to use uninitialized clients.
+  await redisService.onModuleInit();
+
   const redisIoAdapter = new RedisIoAdapter(app, redisService);
   await redisIoAdapter.connectToRedis();
   app.useWebSocketAdapter(redisIoAdapter);

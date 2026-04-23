@@ -11,6 +11,7 @@
 | P1-T6 | Set up environment configuration (dev/prod) | April 21, 2026 | Implemented @nestjs/config with Joi validation; refactored RedisService for robustness. |
 | P1-T7 | Create database schema and run migrations | April 22, 2026 | Implemented core models (User, Game, Move, etc.) with indices and baseline migration. |
 | P1-T8 | Seed database with test users | April 23, 2026 | Created idempotent Prisma seed script with 4 test users for 2v2 simulation. |
+| FIX-01 | Resolve RedisIoAdapter bootstrap race condition | April 23, 2026 | Fixed startup crash by explicitly awaiting Redis connection in main.ts. |
 
 ## Current Focus
 - **Phase 2: Authentication & User Management** - Implementing security and user identity.
@@ -27,6 +28,7 @@
 - [x] **P1-T6**: Set up environment configuration (dev/prod)
 - [x] **P1-T7**: Create database schema and run migrations
 - [x] **P1-T8**: Seed database with test users
+- [x] **FIX-01**: Resolve RedisIoAdapter bootstrap race condition
 
 ### Phase 2: Authentication & User Management
 - [ ] **P2-T1**: Implement JWT-based authentication with Passport.js
