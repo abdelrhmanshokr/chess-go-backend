@@ -9,6 +9,16 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   /**
+   * CORS Configuration.
+   * Enables the frontend application to communicate with the backend.
+   */
+  app.enableCors({
+    origin: 'http://localhost:3001',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+
+  /**
    * Global Validation Pipe.
    * Enables DTO-based validation across all endpoints using class-validator.
    */
