@@ -1,0 +1,37 @@
+docs/
+
+ai_agents_docs/
+
+node_modules/
+
+implemented_tasks/
+
+dist/
+
+# Ignore all environment files
+.env
+
+# Ignore all AI agents files
+AGENT_DISPATCH.md
+CODER.md
+DOCUMENTER.md
+PLANNER.md
+progress_template.md
+REVIEWER.md
+TESTER.md
+VERIFIER.md
+
+# Current/implemented tasks description files
+P1-T1_Initialize_NestJS.md
+P1-T2_Configure_Prisma.md
+P1-T3_Set_up_Redis.md
+P1-T4_Configure_Socket.io_Gateway.md
+P1-T5_Install_chess.js.md
+P1-T6_Set_up_Environment_Configuration.md
+P1-T7_Create_Database_Schema.md
+P1-T8_Seed_Database_with_Test_Users.md
+P2-T1_Implement_JWT_Auth.md
+P2-T2_User_Registration.md
+
+# Current/implemented issues description files
+FIX-01_Resolve_Redis_Bootstrap_Issue.md
