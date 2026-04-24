@@ -30,6 +30,7 @@ P1-T5_Install_chess.js.md
 P1-T6_Set_up_Environment_Configuration.md
 P1-T7_Create_Database_Schema.md
 P1-T8_Seed_Database_with_Test_Users.md
+P2-T1_Implement_JWT_Auth.md
 
 # Current/implemented issues description files
 FIX-01_Resolve_Redis_Bootstrap_Issue.md

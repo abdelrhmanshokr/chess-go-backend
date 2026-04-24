@@ -12,10 +12,11 @@
 | P1-T7 | Create database schema and run migrations | April 22, 2026 | Implemented core models (User, Game, Move, etc.) with indices and baseline migration. |
 | P1-T8 | Seed database with test users | April 23, 2026 | Created idempotent Prisma seed script with 4 test users for 2v2 simulation. |
 | FIX-01 | Resolve RedisIoAdapter bootstrap race condition | April 23, 2026 | Fixed startup crash by explicitly awaiting Redis connection in main.ts. |
+| P2-T1 | Implement JWT-based authentication with Passport.js | April 24, 2026 | Implemented JwtStrategy and AuthService with aligned payload structures. |
 
 ## Current Focus
 - **Phase 2: Authentication & User Management** - Implementing security and user identity.
-- **Current Task**: P2-T1: Implement JWT-based authentication with Passport.js.
+- **Current Task**: P2-T2: User registration with password hashing.
 
 ## Task Breakdown
 
@@ -31,7 +32,7 @@
 - [x] **FIX-01**: Resolve RedisIoAdapter bootstrap race condition
 
 ### Phase 2: Authentication & User Management
-- [ ] **P2-T1**: Implement JWT-based authentication with Passport.js
+- [x] **P2-T1**: Implement JWT-based authentication with Passport.js
 - [ ] **P2-T2**: User registration with password hashing
 - [ ] **P2-T3**: Login endpoint returning JWT
 - [ ] **P2-T4**: Strategy for protecting routes

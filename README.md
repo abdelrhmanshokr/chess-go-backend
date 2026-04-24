@@ -34,7 +34,7 @@ NestJS (Node.js with TypeScript). Project initialized on April 1, 2026.
 ### Installation
 1. Clone the repository.
 2. Install dependencies: `npm install`
-3. Configure Environment: Copy `.env.example` to `.env` and provide your specific credentials.
+3. Configure Environment: Copy `.env.example` to `.env` and provide your specific credentials including `JWT_SECRET`.
 4. Database Setup:
    ```bash
    npx prisma migrate dev  # Runs migrations
@@ -42,6 +42,12 @@ NestJS (Node.js with TypeScript). Project initialized on April 1, 2026.
    npx prisma db seed      # Populates test users
    ```
 5. Run the development server: `npm run start:dev`
+
+## 🔐 Authentication
+The project uses JSON Web Tokens (JWT) for secure state management and endpoint protection.
+- **Strategy**: `JwtStrategy` extracts and validates Bearer tokens from the `Authorization` header.
+- **Configuration**: `JWT_SECRET` and `JWT_EXPIRATION` are strictly validated via the `ConfigModule`.
+- **Identity**: Consistent payload structure `{ sub: userId, email }` used across signing and validation.
 
 ## ⚙️ Configuration
 The application uses strict environment variable validation.
