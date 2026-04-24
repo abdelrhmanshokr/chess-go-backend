@@ -13,10 +13,11 @@
 | P1-T8 | Seed database with test users | April 23, 2026 | Created idempotent Prisma seed script with 4 test users for 2v2 simulation. |
 | FIX-01 | Resolve RedisIoAdapter bootstrap race condition | April 23, 2026 | Fixed startup crash by explicitly awaiting Redis connection in main.ts. |
 | P2-T1 | Implement JWT-based authentication with Passport.js | April 24, 2026 | Implemented JwtStrategy and AuthService with aligned payload structures. |
+| P2-T2 | User registration with password hashing | April 24, 2026 | Implemented secure registration with bcrypt hashing and validation DTOs. |
 
 ## Current Focus
 - **Phase 2: Authentication & User Management** - Implementing security and user identity.
-- **Current Task**: P2-T2: User registration with password hashing.
+- **Current Task**: P2-T3: Login endpoint returning JWT.
 
 ## Task Breakdown
 
@@ -33,7 +34,7 @@
 
 ### Phase 2: Authentication & User Management
 - [x] **P2-T1**: Implement JWT-based authentication with Passport.js
-- [ ] **P2-T2**: User registration with password hashing
+- [x] **P2-T2**: User registration with password hashing
 - [ ] **P2-T3**: Login endpoint returning JWT
 - [ ] **P2-T4**: Strategy for protecting routes
 - [ ] **P2-T5**: Auth guards for HTTP and WebSockets

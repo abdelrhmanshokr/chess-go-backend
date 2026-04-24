@@ -26,11 +26,11 @@ describe('JwtStrategy', () => {
   });
 
   describe('validate', () => {
-    it('should return userId and email from payload', async () => {
+    it('should return sub and email from payload', async () => {
       const payload = { sub: '123', email: 'test@example.com' };
       const result = await strategy.validate(payload);
 
-      expect(result).toEqual({ userId: '123', email: 'test@example.com' });
+      expect(result).toEqual({ sub: '123', email: 'test@example.com' });
     });
   });
 });
