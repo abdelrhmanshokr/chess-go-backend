@@ -46,6 +46,7 @@ NestJS (Node.js with TypeScript). Project initialized on April 1, 2026.
 ## 🔐 Authentication
 The project uses JSON Web Tokens (JWT) for secure state management and endpoint protection.
 - **Registration**: Secure `POST /auth/register` endpoint with bcrypt hashing (10 salt rounds) and duplicate checks.
+- **Login**: `POST /auth/login` endpoint accepting email or username as an `identifier`. Returns a signed JWT upon successful credential verification.
 - **Strategy**: `JwtStrategy` extracts and validates Bearer tokens from the `Authorization` header.
 - **Configuration**: `JWT_SECRET` and `JWT_EXPIRATION` are strictly validated via the `ConfigModule`.
 - **Identity**: Consistent payload structure `{ sub: userId, email }` used across signing and validation.

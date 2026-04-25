@@ -1,8 +1,9 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -48,6 +49,38 @@ export class AuthService {
     // Exclude password from the returned object
     const { password, ...result } = user;
     return result;
+  }
+
+  /**
+   * Validates user credentials and issues a JWT token.
+   * @param dto Login data (identifier, password).
+   * @returns An object containing the access token.
+   */
+  async login(dto: LoginDto) {
+    // Find user by email or username
+    const user = await this.prisma.user.findFirst({
+      where: {
+        OR: [{ email: dto.identifier }, { username: dto.identifier }],
+      },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    // Compare provided password with hashed password in database
+    const isPasswordValid = await bcrypt.compare(dto.password, user.password);
+
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    // Sign the token and return
+    const token = await this.signToken(user.id, user.email);
+
+    return {
+      access_token: token,
+    };
   }
 
   /**
