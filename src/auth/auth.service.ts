@@ -1,4 +1,9 @@
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { 
+    ConflictException, 
+    Injectable, 
+    UnauthorizedException,
+    Logger 
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
@@ -7,6 +12,8 @@ import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   /**
    * Service responsible for handling authentication logic.
    * Handles user registration, password hashing, and token signing.
@@ -76,7 +83,7 @@ export class AuthService {
     }
 
     // Sign the token and return
-    const token = await this.signToken(user.id, user.email);
+    const token = await this.signToken(user.id, user.email, user.username);
 
     return {
       access_token: token,
@@ -87,12 +94,14 @@ export class AuthService {
    * Signs a JWT token for a given user.
    * @param userId The unique identifier of the user.
    * @param email The user's email address.
+   * @param username The user's username.
    * @returns Signed JWT token.
    */
-  async signToken(userId: string, email: string): Promise<string> {
+  async signToken(userId: string, email: string, username: string): Promise<string> {
     const payload = {
       sub: userId,
       email,
+      username,
     };
 
     return this.jwtService.signAsync(payload);
