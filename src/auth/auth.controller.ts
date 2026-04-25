@@ -1,7 +1,9 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { CurrentUser } from './decorators/current-user.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -30,5 +32,16 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async login(@Body() dto: LoginDto) {
     return this.authService.login(dto);
+  }
+
+  /**
+   * Protected endpoint to get the current user's profile.
+   * @param user The authenticated user extracted by the CurrentUser decorator.
+   * @returns User information.
+   */
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
+  async getProfile(@CurrentUser() user: any) {
+    return user;
   }
 }

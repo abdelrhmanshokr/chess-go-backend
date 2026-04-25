@@ -154,11 +154,13 @@ describe('AuthService', () => {
     it('should call jwtService.signAsync with correct payload', async () => {
       const userId = '123';
       const email = 'test@example.com';
-      const result = await service.signToken(userId, email);
+      const username = 'testuser';
+      const result = await service.signToken(userId, email, username);
 
       expect(jwtService.signAsync).toHaveBeenCalledWith({
         sub: userId,
         email,
+        username,
       });
       expect(result).toBe('mock-token');
     });
