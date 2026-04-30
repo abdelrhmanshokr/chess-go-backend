@@ -21,6 +21,7 @@ model User {
   username      String   @unique
   password      String
   avatarUrl     String?
+  refreshTokenHash String?
   elo           Int      @default(1200)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt

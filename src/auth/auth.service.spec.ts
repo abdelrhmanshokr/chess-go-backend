@@ -1,9 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { JwtService } from '@nestjs/jwt';
-import { ConflictException, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, UnauthorizedException, ForbiddenException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import { createHash } from 'crypto';
 import { AuthService } from './auth.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { ConfigService } from '@nestjs/config';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -21,12 +23,24 @@ describe('AuthService', () => {
           },
         },
         {
+          provide: ConfigService,
+          useValue: {
+            get: jest.fn().mockImplementation((key: string) => {
+              if (key === 'JWT_ACCESS_EXPIRES_IN') return '15m';
+              if (key === 'JWT_REFRESH_EXPIRES_IN') return '7d';
+              return 'test-secret';
+            }),
+          },
+        },
+        {
           provide: PrismaService,
           useValue: {
             user: {
               findFirst: jest.fn(),
               findUnique: jest.fn(),
               create: jest.fn(),
+              update: jest.fn(),
+              updateMany: jest.fn(),
             },
           },
         },
@@ -104,19 +118,22 @@ describe('AuthService', () => {
         email: 'test@example.com',
         username: 'testuser',
         password: hashedPassword,
+        elo: 1000,
       } as any);
 
       await expect(service.login(dto)).rejects.toThrow(UnauthorizedException);
     });
 
-    it('should return access token on successful login with email', async () => {
+    it('should return access token and user info on successful login with email', async () => {
       const hashedPassword = await bcrypt.hash(dto.password, 10);
-      jest.spyOn(prisma.user, 'findFirst').mockResolvedValue({
+      const mockUser = {
         id: '1',
         email: 'test@example.com',
         username: 'testuser',
         password: hashedPassword,
-      } as any);
+        elo: 1000,
+      };
+      jest.spyOn(prisma.user, 'findFirst').mockResolvedValue(mockUser as any);
 
       const result = await service.login(dto);
 
@@ -127,17 +144,25 @@ describe('AuthService', () => {
       });
       expect(result).toHaveProperty('access_token');
       expect(result.access_token).toBe('mock-token');
+      expect(result.user).toEqual({
+        id: mockUser.id,
+        email: mockUser.email,
+        username: mockUser.username,
+        elo: mockUser.elo,
+      });
     });
 
-    it('should return access token on successful login with username', async () => {
+    it('should return access token and user info on successful login with username', async () => {
       const usernameDto = { identifier: 'testuser', password: 'password123' };
       const hashedPassword = await bcrypt.hash(dto.password, 10);
-      jest.spyOn(prisma.user, 'findFirst').mockResolvedValue({
+      const mockUser = {
         id: '1',
         email: 'test@example.com',
         username: 'testuser',
         password: hashedPassword,
-      } as any);
+        elo: 1000,
+      };
+      jest.spyOn(prisma.user, 'findFirst').mockResolvedValue(mockUser as any);
 
       const result = await service.login(usernameDto);
 
@@ -147,6 +172,72 @@ describe('AuthService', () => {
         },
       });
       expect(result.access_token).toBe('mock-token');
+      expect(result.user).toEqual({
+        id: mockUser.id,
+        email: mockUser.email,
+        username: mockUser.username,
+        elo: mockUser.elo,
+      });
+    });
+  });
+
+  describe('refreshTokens', () => {
+    const userId = '1';
+    const refreshToken = 'valid-refresh-token';
+
+    it('should throw ForbiddenException if user not found or no hash', async () => {
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(null);
+
+      await expect(service.refreshTokens(userId, refreshToken)).rejects.toThrow(ForbiddenException);
+    });
+
+    it('should throw ForbiddenException if refresh token does not match hash', async () => {
+      const hashedRT = await bcrypt.hash('different-token', 10);
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValue({
+        id: userId,
+        refreshTokenHash: hashedRT,
+      } as any);
+
+      await expect(service.refreshTokens(userId, refreshToken)).rejects.toThrow(ForbiddenException);
+    });
+
+    it('should return new tokens and update hash on success', async () => {
+      const tokenDataToHash = createHash('sha256')
+        .update(refreshToken)
+        .digest('hex');
+      const hashedRT = await bcrypt.hash(tokenDataToHash, 10);
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValue({
+        id: userId,
+        email: 'test@example.com',
+        username: 'testuser',
+        refreshTokenHash: hashedRT,
+      } as any);
+      jest.spyOn(prisma.user, 'update').mockResolvedValue({} as any);
+
+      const result = await service.refreshTokens(userId, refreshToken);
+
+      expect(result).toHaveProperty('access_token');
+      expect(result).toHaveProperty('refresh_token');
+      expect(prisma.user.update).toHaveBeenCalled();
+    });
+  });
+
+  describe('logout', () => {
+    it('should call updateMany to clear refresh token hash', async () => {
+      const userId = '1';
+      jest.spyOn(prisma.user, 'updateMany').mockResolvedValue({ count: 1 } as any);
+
+      await service.logout(userId);
+
+      expect(prisma.user.updateMany).toHaveBeenCalledWith({
+        where: {
+          id: userId,
+          refreshTokenHash: { not: null },
+        },
+        data: {
+          refreshTokenHash: null,
+        },
+      });
     });
   });
 
@@ -157,11 +248,14 @@ describe('AuthService', () => {
       const username = 'testuser';
       const result = await service.signToken(userId, email, username);
 
-      expect(jwtService.signAsync).toHaveBeenCalledWith({
-        sub: userId,
-        email,
-        username,
-      });
+      expect(jwtService.signAsync).toHaveBeenCalledWith(
+        {
+          sub: userId,
+          email,
+          username,
+        },
+        expect.any(Object),
+      );
       expect(result).toBe('mock-token');
     });
   });
