@@ -2,13 +2,16 @@ import {
     ConflictException, 
     Injectable, 
     UnauthorizedException,
+    ForbiddenException,
     Logger 
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { createHash } from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -21,6 +24,7 @@ export class AuthService {
   constructor(
     private jwtService: JwtService,
     private prisma: PrismaService,
+    private config: ConfigService,
   ) {}
 
   /**
@@ -61,7 +65,7 @@ export class AuthService {
   /**
    * Validates user credentials and issues a JWT token.
    * @param dto Login data (identifier, password).
-   * @returns An object containing the access token.
+   * @returns An object containing the access token and user info
    */
   async login(dto: LoginDto) {
     // Find user by email or username
@@ -82,28 +86,118 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    // Sign the token and return
-    const token = await this.signToken(user.id, user.email, user.username);
+    // Generate tokens
+    const tokens = await this.getTokens(user.id, user.email, user.username);
+    
+    // Update refresh token hash in database
+    await this.updateRefreshTokenHash(user.id, tokens.refresh_token);
 
     return {
-      access_token: token,
+      ...tokens,
+      user: {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        elo: user.elo
+      },
     };
   }
 
   /**
-   * Signs a JWT token for a given user.
-   * @param userId The unique identifier of the user.
-   * @param email The user's email address.
-   * @param username The user's username.
-   * @returns Signed JWT token.
+   * Refreshes the access token using a valid refresh token.
+   */
+  async refreshTokens(userId: string, refreshToken: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user || !user.refreshTokenHash) {
+      throw new ForbiddenException('Access Denied');
+    }
+
+    // Hash the long JWT into a 64-char hex string to fit in bcrypt's 72-byte limit
+    const tokenDataToCompare = createHash('sha256')
+      .update(refreshToken)
+      .digest('hex');
+
+    const refreshTokenMatches = await bcrypt.compare(
+      tokenDataToCompare,
+      user.refreshTokenHash,
+    );
+
+    if (!refreshTokenMatches) {
+      throw new ForbiddenException('Access Denied');
+    }
+
+    const tokens = await this.getTokens(user.id, user.email, user.username);
+    await this.updateRefreshTokenHash(user.id, tokens.refresh_token);
+
+    return tokens;
+  }
+
+  /**
+   * Logs out the user by clearing the refresh token hash.
+   */
+  async logout(userId: string) {
+    await this.prisma.user.updateMany({
+      where: {
+        id: userId,
+        refreshTokenHash: { not: null },
+      },
+      data: {
+        refreshTokenHash: null,
+      },
+    });
+  }
+
+  /**
+   * Updates the encrypted refresh token in the database.
+   */
+  async updateRefreshTokenHash(userId: string, refreshToken: string) {
+    if (!refreshToken) return;
+    
+    // Hash the long JWT into a 64-char hex string to fit in bcrypt's 72-byte limit
+    const tokenDataToHash = createHash('sha256')
+      .update(refreshToken)
+      .digest('hex');
+      
+    const hash = await bcrypt.hash(tokenDataToHash, 10);
+    
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { refreshTokenHash: hash },
+    });
+  }
+
+  /**
+   * Generates a pair of access and refresh tokens.
+   */
+  async getTokens(userId: string, email: string, username: string) {
+    const payload = { sub: userId, email, username };
+
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(payload, {
+        secret: this.config.get<string>('JWT_SECRET'),
+        expiresIn: this.config.get<string>('JWT_EXPIRATION') as any,
+      }),
+      this.jwtService.signAsync(payload, {
+        secret: this.config.get<string>('JWT_REFRESH_SECRET'),
+        expiresIn: this.config.get<string>('JWT_REFRESH_EXPIRATION') as any,
+      }),
+    ]);
+
+    return {
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    };
+  }
+
+  /**
+   * Legacy method for signing a single token.
+   * Redirects to getTokens for internal consistency if still used.
    */
   async signToken(userId: string, email: string, username: string): Promise<string> {
-    const payload = {
-      sub: userId,
-      email,
-      username,
-    };
-
-    return this.jwtService.signAsync(payload);
+    const tokens = await this.getTokens(userId, email, username);
+    return tokens.access_token;
   }
 }

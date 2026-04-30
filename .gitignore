@@ -6,6 +6,8 @@ node_modules/
 
 implemented_tasks/
 
+current_task/
+
 dist/
 
 # Ignore all environment files
@@ -34,6 +36,3 @@ P2-T1_Implement_JWT_Auth.md
 P2-T2_User_Registration.md
 P2-T3_Login_Endpoint.md
 P2-T4-T5_Implement_Auth_Guards.md
-
-# Current/implemented issues description files
-FIX-01_Resolve_Redis_Bootstrap_Issue.md
