@@ -57,15 +57,4 @@ export class AuthController {
     const userId = req.user['sub'];
     return this.authService.logout(userId);
   }
-
-  /**
-   * Protected endpoint to get the current user's profile.
-   * @param user The authenticated user extracted by the CurrentUser decorator.
-   * @returns User information.
-   */
-  @UseGuards(JwtAuthGuard)
-  @Get('profile')
-  async getProfile(@CurrentUser() user: any) {
-    return user;
-  }
 }
