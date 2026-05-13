@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { LeaderboardQueryDto } from './dto/leaderboard-query.dto';
 
 @Injectable()
 export class UsersService {
@@ -20,6 +21,10 @@ export class UsersService {
         username: true,
         avatarUrl: true,
         elo: true,
+        gamesPlayed: true,
+        wins: true,
+        losses: true,
+        draws: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -30,6 +35,51 @@ export class UsersService {
     }
 
     return user;
+  }
+
+  /**
+   * Retrieves user statistics.
+   * @param id User ID.
+   */
+  async getStats(id: string) {
+    const user = await this.findOne(id);
+    const winRate = user.gamesPlayed > 0 
+      ? Math.round((user.wins / user.gamesPlayed) * 100) 
+      : 0;
+
+    return {
+      id: user.id,
+      username: user.username,
+      elo: user.elo,
+      gamesPlayed: user.gamesPlayed,
+      wins: user.wins,
+      losses: user.losses,
+      draws: user.draws,
+      winRate,
+    };
+  }
+
+  /**
+   * Retrieves the global leaderboard.
+   */
+  async getLeaderboard(query: LeaderboardQueryDto) {
+    const { limit, offset } = query;
+
+    return this.prisma.user.findMany({
+      orderBy: { elo: 'desc' },
+      take: limit,
+      skip: offset,
+      select: {
+        id: true,
+        username: true,
+        avatarUrl: true,
+        elo: true,
+        wins: true,
+        losses: true,
+        draws: true,
+        gamesPlayed: true,
+      },
+    });
   }
 
   /**
