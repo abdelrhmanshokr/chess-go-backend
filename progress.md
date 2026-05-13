@@ -17,10 +17,11 @@
 | P2-T3 | Login endpoint returning JWT | April 25, 2026 | Implemented dual-identifier login (email/username) with credential verification. |
 | P2-T4/T5 | Implement Auth Guards (HTTP/WS) | April 25, 2026 | Secured API and WebSockets with JWT guards and custom user decorators. |
 | P2-T6 | Refresh token mechanism | April 29, 2026 | Implemented dual-token issuance (Access/Refresh), rotation, hashing, and logout revocation. |
+| P2-T7 | User profile CRUD operations | May 13, 2026 | Implemented private/public profile access and self-service profile updates. |
 
 ## Current Focus
 - **Phase 2: Authentication & User Management** - Completing user management and profile operations.
-- **Current Task**: P2-T7: User profile CRUD operations.
+- **Current Task**: P2-T8: Elo rating and statistics endpoints.
 
 ## Task Breakdown
 
@@ -42,7 +43,7 @@
 - [x] **P2-T4**: Strategy for protecting routes
 - [x] **P2-T5**: Auth guards for HTTP and WebSockets
 - [x] **P2-T6**: Refresh token mechanism
-- [ ] **P2-T7**: User profile CRUD operations
+- [x] **P2-T7**: User profile CRUD operations
 - [ ] **P2-T8**: Elo rating and statistics endpoints
 
 ### Phase 3: Game Core Logic

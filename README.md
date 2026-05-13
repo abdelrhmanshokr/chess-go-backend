@@ -49,6 +49,10 @@ The project uses JSON Web Tokens (JWT) for secure state management and endpoint 
 - **Login**: `POST /auth/login` endpoint accepting email or username as an `identifier`. Returns a signed JWT upon successful credential verification.
 - **Refresh Token**: `POST /auth/refresh` endpoint supporting token rotation. Issues a new access/refresh token pair and updates the stored hash in the database for security.
 - **Logout**: `POST /auth/logout` endpoint to invalidate the user's refresh token by clearing the stored hash from the database.
+- **Profile Management**:
+  - `GET /users/me`: Returns the authenticated user's private profile.
+  - `GET /users/:id`: Returns public profile information for any user.
+  - `PATCH /users/me`: Allows users to update their profile (e.g., username) with validation.
 - **Profile**: Protected `GET /auth/profile` endpoint using `JwtAuthGuard` and `@CurrentUser()` decorator to retrieve the authenticated user's information.
 - **WebSocket Protection**: `WsJwtGuard` secures the `GameGateway`, extracting and validating tokens from the handshake or headers, attaching the identity to `client.data.user`.
 - **Strategy**: `JwtStrategy` extracts and validates Bearer tokens from the `Authorization` header.
