@@ -53,6 +53,9 @@ The project uses JSON Web Tokens (JWT) for secure state management and endpoint 
   - `GET /users/me`: Returns the authenticated user's private profile.
   - `GET /users/:id`: Returns public profile information for any user.
   - `PATCH /users/me`: Allows users to update their profile (e.g., username) with validation.
+  - `GET /users/:id/stats`: Retrieves a player's Elo rating and win/loss/draw statistics.
+- **Leaderboard**:
+  - `GET /leaderboard`: Returns a paginated list of top players ranked by Elo rating.
 - **Profile**: Protected `GET /auth/profile` endpoint using `JwtAuthGuard` and `@CurrentUser()` decorator to retrieve the authenticated user's information.
 - **WebSocket Protection**: `WsJwtGuard` secures the `GameGateway`, extracting and validating tokens from the handshake or headers, attaching the identity to `client.data.user`.
 - **Strategy**: `JwtStrategy` extracts and validates Bearer tokens from the `Authorization` header.

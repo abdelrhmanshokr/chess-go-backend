@@ -18,10 +18,11 @@
 | P2-T4/T5 | Implement Auth Guards (HTTP/WS) | April 25, 2026 | Secured API and WebSockets with JWT guards and custom user decorators. |
 | P2-T6 | Refresh token mechanism | April 29, 2026 | Implemented dual-token issuance (Access/Refresh), rotation, hashing, and logout revocation. |
 | P2-T7 | User profile CRUD operations | May 13, 2026 | Implemented private/public profile access and self-service profile updates. |
+| P2-T8 | Elo rating and statistics endpoints | May 13, 2026 | Implemented global leaderboard and individual player statistics aggregation. |
 
 ## Current Focus
-- **Phase 2: Authentication & User Management** - Completing user management and profile operations.
-- **Current Task**: P2-T8: Elo rating and statistics endpoints.
+- **Phase 3: Game Core Logic** - Implementing the core chess mechanics and game state management.
+- **Current Task**: P3-T1: GameService with core logic (create, move, validate).
 
 ## Task Breakdown
 
@@ -36,7 +37,7 @@
 - [x] **P1-T8**: Seed database with test users
 - [x] **FIX-01**: Resolve RedisIoAdapter bootstrap race condition
 
-### Phase 2: Authentication & User Management (IN-PROGRESS)
+### Phase 2: Authentication & User Management (COMPLETED)
 - [x] **P2-T1**: Implement JWT-based authentication with Passport.js
 - [x] **P2-T2**: User registration with password hashing
 - [x] **P2-T3**: Login endpoint returning JWT
@@ -44,10 +45,10 @@
 - [x] **P2-T5**: Auth guards for HTTP and WebSockets
 - [x] **P2-T6**: Refresh token mechanism
 - [x] **P2-T7**: User profile CRUD operations
-- [ ] **P2-T8**: Elo rating and statistics endpoints
+- [x] **P2-T8**: Elo rating and statistics endpoints
 
 ### Phase 3: Game Core Logic
-- [ ] **P3-T1**: GameService with core logic (create, move, validate)
+- [ ] **P3-T1**: GameService with core logic (create, move, validate) **(In Progress)**
 - [ ] **P3-T2**: Server-side move validation (chess.js)
 - [ ] **P3-T3**: Turn order enforcement (2v2 rotation)
 - [ ] **P3-T4**: Win/Loss/Draw detection logic

@@ -13,6 +13,10 @@ describe('UsersService', () => {
     username: 'testuser',
     avatarUrl: 'http://avatar.com',
     elo: 1000,
+    gamesPlayed: 10,
+    wins: 6,
+    losses: 3,
+    draws: 1,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -26,6 +30,7 @@ describe('UsersService', () => {
           useValue: {
             user: {
               findUnique: jest.fn(),
+              findMany: jest.fn(),
               update: jest.fn(),
             },
           },
@@ -55,6 +60,10 @@ describe('UsersService', () => {
           username: true,
           avatarUrl: true,
           elo: true,
+          gamesPlayed: true,
+          wins: true,
+          losses: true,
+          draws: true,
           createdAt: true,
           updatedAt: true,
         },
@@ -101,6 +110,50 @@ describe('UsersService', () => {
         }),
       });
       expect(result.username).toBe('newname');
+    });
+  });
+
+  describe('getStats', () => {
+    it('should calculate win rate correctly', async () => {
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(mockUser as any);
+
+      const result = await service.getStats('user-1');
+
+      expect(result.winRate).toBe(60); // 6 wins / 10 games
+      expect(result.elo).toBe(1000);
+    });
+
+    it('should return 0 win rate if no games played', async () => {
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValue({
+        ...mockUser,
+        gamesPlayed: 0,
+        wins: 0,
+      } as any);
+
+      const result = await service.getStats('user-1');
+
+      expect(result.winRate).toBe(0);
+    });
+  });
+
+  describe('getLeaderboard', () => {
+    it('should return users ordered by elo', async () => {
+      const mockLeaderboard = [
+        { id: '1', username: 'pro', elo: 2000 },
+        { id: '2', username: 'noob', elo: 800 },
+      ];
+      jest.spyOn(prisma.user, 'findMany').mockResolvedValue(mockLeaderboard as any);
+
+      const query = { limit: 10, offset: 0 };
+      const result = await service.getLeaderboard(query);
+
+      expect(prisma.user.findMany).toHaveBeenCalledWith({
+        orderBy: { elo: 'desc' },
+        take: 10,
+        skip: 0,
+        select: expect.any(Object),
+      });
+      expect(result).toEqual(mockLeaderboard);
     });
   });
 });

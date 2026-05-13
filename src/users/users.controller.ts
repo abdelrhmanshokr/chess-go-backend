@@ -1,12 +1,23 @@
-import { Controller, Get, Patch, Body, UseGuards, Param } from '@nestjs/common';
+import { Controller, Get, Patch, Body, UseGuards, Param, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { LeaderboardQueryDto } from './dto/leaderboard-query.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  /**
+   * GET /users/leaderboard
+   * Public leaderboard access.
+   * Moved before :id to prevent conflict.
+   */
+  @Get('leaderboard')
+  async getLeaderboard(@Query() query: LeaderboardQueryDto) {
+    return this.usersService.getLeaderboard(query);
+  }
 
   /**
    * GET /users/me
@@ -18,6 +29,15 @@ export class UsersController {
     // CurrentUser decorator usually returns limited data from JWT, 
     // fetch full profile from DB.
     return this.usersService.findOne(user.sub || user.id);
+  }
+
+  /**
+   * GET /users/:id/stats
+   * Retrieves competitive statistics for a user.
+   */
+  @Get(':id/stats')
+  async getStats(@Param('id') id: string) {
+    return this.usersService.getStats(id);
   }
 
   /**
