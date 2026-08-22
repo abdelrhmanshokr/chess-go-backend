@@ -13,7 +13,8 @@ async function bootstrap() {
    * Enables the frontend application to communicate with the backend.
    */
   app.enableCors({
-    origin: 'http://localhost:3001',
+    origin: ['http://localhost:3001', 'http://192.168.1.18:3001'],
+    // origin: ['http://localhost:3001'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });

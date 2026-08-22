@@ -1,11 +1,20 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { RedisService } from '../redis/redis.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LeaderboardQueryDto } from './dto/leaderboard-query.dto';
+import { UserStatsDto } from './dto/user-stats.dto';
+
+// Short TTL: leaderboard tolerates staleness, but shouldn't go too long
+// without reflecting recent Elo changes from finished games.
+const LEADERBOARD_CACHE_TTL_SECONDS = 30;
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private redis: RedisService,
+  ) {}
 
   /**
    * Finds a user by ID.
@@ -41,7 +50,7 @@ export class UsersService {
    * Retrieves user statistics.
    * @param id User ID.
    */
-  async getStats(id: string) {
+  async getStats(id: string): Promise<UserStatsDto> {
     const user = await this.findOne(id);
     const winRate = user.gamesPlayed > 0 
       ? Math.round((user.wins / user.gamesPlayed) * 100) 
@@ -65,7 +74,16 @@ export class UsersService {
   async getLeaderboard(query: LeaderboardQueryDto) {
     const { limit, offset } = query;
 
-    return this.prisma.user.findMany({
+    // Cache key is scoped per page, since limit/offset combos are requested
+    // repeatedly (e.g. everyone loading page 1) and Elo changes infrequently
+    // relative to leaderboard read volume.
+    const cacheKey = `leaderboard:limit=${limit}:offset=${offset}`;
+    const cached = await this.redis.get(cacheKey);
+    if (cached) {
+      return JSON.parse(cached);
+    }
+
+    const leaderboard = await this.prisma.user.findMany({
       orderBy: { elo: 'desc' },
       take: limit,
       skip: offset,
@@ -80,6 +98,10 @@ export class UsersService {
         gamesPlayed: true,
       },
     });
+
+    await this.redis.set(cacheKey, JSON.stringify(leaderboard), LEADERBOARD_CACHE_TTL_SECONDS);
+
+    return leaderboard;
   }
 
   /**

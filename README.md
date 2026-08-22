@@ -87,7 +87,15 @@ The project uses Socket.io for real-time communication.
 The backend integration includes `chess.js` to enforce rules and manage game state.
 - **Move Validation**: Validates moves against FEN states.
 - **State Management**: Handles standard chess notation (FEN/PGN).
-- **Core Engine**: Powers the upcoming `GameService`.
+- **Core Engine**: Powers `GameService`.
+
+## 🎮 Game Core (`GameService`)
+Server-side authority for game state, backed by Prisma and `chess.js`. No REST/WS surface yet — this is the internal service Phase 5's `GameGateway` will call directly.
+- **`createGame(dto)`**: Persists a new 2v2 `Game` from 4 named seats (`whitePlayer1Id`/`whitePlayer2Id`/`blackPlayer1Id`/`blackPlayer2Id`), rejecting duplicate or non-existent player IDs.
+- **`makeMove(gameId, playerId, move)`**: Validates the move server-side via `chess.js`, then atomically updates `Game.fen` and logs a `Move` row.
+- **`validateMove(fen, move)`**: Pure legality check against a given FEN — used internally by `makeMove`, reusable by the future gateway.
+- **`forfeit(gameId, playerId)`**: Stub — validates inputs but doesn't yet end the game (full resignation flow lands with win/loss detection).
+- **Not yet enforced**: 2v2 turn rotation across teammates and win/loss/stalemate detection — both deferred to sibling Phase 3 tasks.
 
 ## 🧠 The Agents
 Agent	File	Responsibility

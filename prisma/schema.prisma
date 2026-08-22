@@ -39,6 +39,9 @@ model User {
   // Participation in moves and draw offers
   moves         Move[]
   drawOffers    DrawOffer[]
+
+  // Speeds up leaderboard sort (ORDER BY elo DESC)
+  @@index([elo])
 }
 
 /// Enum for game states.

@@ -19,10 +19,11 @@
 | P2-T6 | Refresh token mechanism | April 29, 2026 | Implemented dual-token issuance (Access/Refresh), rotation, hashing, and logout revocation. |
 | P2-T7 | User profile CRUD operations | May 13, 2026 | Implemented private/public profile access and self-service profile updates. |
 | P2-T8 | Elo rating and statistics endpoints | May 13, 2026 | Implemented global leaderboard and individual player statistics aggregation. |
+| P3-T1 | GameService with core logic (create, move, validate) | May 14, 2026 | Implemented createGame/makeMove/validateMove/forfeit(stub) against the actual schema's 4-named-seat model. Passed review after 2 rounds (distinct-player check, FEN-throw fix, DTO/existence validation). |
 
 ## Current Focus
 - **Phase 3: Game Core Logic** - Implementing the core chess mechanics and game state management.
-- **Current Task**: P3-T1: GameService with core logic (create, move, validate).
+- **Current Task**: P3-T2: Server-side move validation (chess.js).
 
 ## Task Breakdown
 
@@ -48,8 +49,8 @@
 - [x] **P2-T8**: Elo rating and statistics endpoints
 
 ### Phase 3: Game Core Logic
-- [ ] **P3-T1**: GameService with core logic (create, move, validate) **(In Progress)**
-- [ ] **P3-T2**: Server-side move validation (chess.js)
+- [x] **P3-T1**: GameService with core logic (create, move, validate)
+- [ ] **P3-T2**: Server-side move validation (chess.js) **(Next)**
 - [ ] **P3-T3**: Turn order enforcement (2v2 rotation)
 - [ ] **P3-T4**: Win/Loss/Draw detection logic
 - [ ] **P3-T5**: FEN notation and persistence
